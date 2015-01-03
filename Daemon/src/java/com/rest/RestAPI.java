@@ -22,8 +22,8 @@ public class RestAPI {
 		try{			
 			HttpGet request = new HttpGet(restURL);			
 			
-			System.out.println("Waiting for " + Util.REST_SLEEP_TIME_MSEC/1000.0 + " secs");
-			Thread.sleep(Util.REST_SLEEP_TIME_MSEC);
+			System.out.println("Waiting for " + Util.REST_API_SLEEP_TIME_MSEC/1000.0 + " secs");
+			Thread.sleep(Util.REST_API_SLEEP_TIME_MSEC);
 			
 			HttpResponse response = client.execute(request);
 			

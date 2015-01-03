@@ -2,9 +2,11 @@ package com.util;
 
 public final class Util {
 
-	public static final int REST_SLEEP_TIME_MSEC = 15000;
+	public static final int REST_API_SLEEP_TIME_MSEC = 15000;
 	
-	public static final int REBALANCE_WAIT_TIME_MSEC = 45000;
+	public static final int REBALANCER_MANAGER_SLEEP_TIME_MSEC = 45000;
+	
+	public static final int REBALANCE_WAIT_TIME_MSEC = 15000;
 	
 	public static final int SERVER_PORT = 9091;
 	

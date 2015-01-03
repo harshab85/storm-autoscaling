@@ -6,17 +6,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
 
+import com.util.Util;
+
 public class Rebalancer {
 
-	public static void rebalance(String topologyName, Map<String, Integer> components) throws IOException{
+	public static void rebalance(String topologyName, Map<String, Integer> components) throws IOException, InterruptedException{
 		
 		InputStream in = null;
 		BufferedReader reader = null;
 		
-		try{
-			
-			String rebalanceCommand = null;
-			System.out.println("Rebalance command :" + rebalanceCommand);
+		try{									
+			String rebalanceCommand = "cmd.exe /c cd %STORM_HOME%/bin && %PYTHON_HOME%/python storm rebalance demo -w 1 -e spout=2";
+			System.out.println("Rebalance command : " + rebalanceCommand);
 			Process process = Runtime.getRuntime().exec(rebalanceCommand);
 			in = process.getInputStream();
 			
@@ -29,6 +30,8 @@ public class Rebalancer {
 			
 			System.out.println("Response: " + response.toString());
 			System.out.println();
+			
+			Thread.sleep(Util.REBALANCE_WAIT_TIME_MSEC);
 		}
 		finally{
 			
@@ -40,6 +43,5 @@ public class Rebalancer {
 				in.close();
 			}						
 		}
-	}
-	
+	}	
 }

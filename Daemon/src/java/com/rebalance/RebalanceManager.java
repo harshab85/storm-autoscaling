@@ -27,8 +27,8 @@ public class RebalanceManager implements Runnable {
 		try{			
 			synchronized (lock) {		
 				System.out.println();
-				System.out.println("Waiting for " + Util.REBALANCE_WAIT_TIME_MSEC/1000 + " secs");
-				wait(Util.REBALANCE_WAIT_TIME_MSEC);
+				System.out.println("Waiting for " + Util.REBALANCER_MANAGER_SLEEP_TIME_MSEC/1000 + " secs");
+				wait(Util.REBALANCER_MANAGER_SLEEP_TIME_MSEC);
 				
 				Map<String, Topology> topologies = TopologyCache.getInstance().getTopologies();
 				Iterator<String> topologyIterator = topologies.keySet().iterator();
