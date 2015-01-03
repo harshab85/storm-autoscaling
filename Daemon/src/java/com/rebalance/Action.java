@@ -7,6 +7,11 @@ public class Action {
 	private Component component;
 	private ActionEnum action;
 	
+	public Action(Component component, ActionEnum action) {
+		this.component = component;
+		this.action =action;
+	}
+	
 	public Component getComponent() {
 		return component;
 	}
@@ -24,6 +29,6 @@ public class Action {
 	}
 
 	public enum ActionEnum{
-		Increase, Decrease, Stop
+		Increase, Decrease, Stop, MaxRebalance
 	}
 }

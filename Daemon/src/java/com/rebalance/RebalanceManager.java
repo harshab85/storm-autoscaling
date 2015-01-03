@@ -26,22 +26,27 @@ public class RebalanceManager implements Runnable {
 		
 		try{			
 			synchronized (lock) {		
-				System.out.println();
-				System.out.println("Waiting for " + Util.REBALANCER_MANAGER_SLEEP_TIME_MSEC/1000 + " secs");
-				wait(Util.REBALANCER_MANAGER_SLEEP_TIME_MSEC);
-				
-				Map<String, Topology> topologies = TopologyCache.getInstance().getTopologies();
-				Iterator<String> topologyIterator = topologies.keySet().iterator();
-				while(topologyIterator.hasNext()){
-					String topologyName = topologyIterator.next();
-					Topology topology = topologies.get(topologyName);
+				while(TopologyCache.hasTopologies()){				
 					
-					RebalanceStrategy strategy = new RebalanceStrategy(topology);
-					if(strategy.shouldRebalance()){						
-						Map<String, Integer> components = strategy.getComponents();
-						Rebalancer.rebalance(topologyName, components);						
+					System.out.println();
+					System.out.println("Waiting for " + Util.REBALANCER_MANAGER_SLEEP_TIME_MSEC/1000 + " secs");
+					wait(Util.REBALANCER_MANAGER_SLEEP_TIME_MSEC);
+					
+					Map<String, Topology> topologies = TopologyCache.getInstance().getTopologies();
+					Iterator<String> topologyIterator = topologies.keySet().iterator();
+					while(topologyIterator.hasNext()){
+						String topologyName = topologyIterator.next();
+						Topology topology = topologies.get(topologyName);
+						
+						RebalanceStrategy strategy = new RebalanceStrategy(topology);
+						if(strategy.shouldRebalance()){						
+							Map<String, Integer> components = strategy.getComponents();
+							Rebalancer.rebalance(topologyName, components);						
+						}
+						
+						TopologyCache.getInstance().addTopology(topologyName, topology);
 					}
-				}				
+				}
 			}			
 		}
 		catch(Exception e){

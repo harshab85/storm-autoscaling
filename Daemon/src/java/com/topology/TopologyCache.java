@@ -18,6 +18,10 @@ public final class TopologyCache {
 		return INSTANCE;
 	}
 	
+	public static boolean hasTopologies(){
+		return !topologyCache.isEmpty();
+	}
+	
 	public void addTopology(String topologyName, Topology topology){
 		topologyCache.put(topologyName, topology);
 	}
