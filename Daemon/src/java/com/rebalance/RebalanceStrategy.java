@@ -83,6 +83,7 @@ public class RebalanceStrategy {
 				
 		Component oldComponent = action.getComponent();
 		int executors = oldComponent.getExecutors();
+		System.out.println("Current component : " + oldComponent.getId());
 		System.out.println("Executors : " + executors);
 		
 		double oldLatency = oldComponent.getLatency();
@@ -114,15 +115,15 @@ public class RebalanceStrategy {
 			executors--;			
 			Component nextComponent = this.topology.nextComponent();
 			if(nextComponent != null){
-				nextComponent = getPositiveLatency(nextComponent);
+				nextComponent = refreshComponentData(nextComponent);
 				int newExecutors = nextComponent.getExecutors() + 1;
 				nextComponent.setExecutors(newExecutors);
 				Action lastAction = new Action(nextComponent, ActionEnum.Increase);
 				
 				System.out.println("Cant rebalance current component");
 				System.out.println("Next component: " + nextComponent.getId());
-				System.out.println("Next component: old executors: " + (newComponent.getExecutors()-1));
-				System.out.println("Next component: new executors: " + newComponent.getExecutors());
+				System.out.println("Next component: old executors: " + (nextComponent.getExecutors()-1));
+				System.out.println("Next component: new executors: " + nextComponent.getExecutors());
 				
 				this.topology.setLastAction(lastAction);			
 				this.shouldRebalance = true;

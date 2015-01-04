@@ -9,6 +9,7 @@ public class Topology {
 
 	private String id;
 	private String name;
+	private double completeLatency;
 	private List<Component> components;
 	private ComponentsIterator iterator;
 	private Action lastAction;
@@ -45,6 +46,14 @@ public class Topology {
 
 	public void setLastAction(Action lastAction) {
 		this.lastAction = lastAction;
+	}
+	
+	public double getCompleteLatency() {
+		return completeLatency;
+	}
+
+	public void setCompleteLatency(double completeLatency) {
+		this.completeLatency = completeLatency;
 	}
 
 	public Component nextComponent(){

@@ -56,7 +56,7 @@ public class Rebalancer {
 				response.append(line);
 			}
 			
-			System.out.println("Response: " + response.toString());
+			//System.out.println("Response: " + response.toString());
 			System.out.println("Rebalancer: Sleeping for " + Util.REBALANCE_WAIT_TIME_MSEC/1000.0 + " secs");
 			System.out.println();
 			

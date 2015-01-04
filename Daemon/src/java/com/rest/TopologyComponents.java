@@ -24,6 +24,15 @@ public class TopologyComponents {
 		JsonObject jsonObject = jsonResults.getAsJsonObject();
 		JsonArray spoutsArray = (JsonArray)jsonObject.get("spouts");
 		JsonArray boltsArray = (JsonArray)jsonObject.get("bolts");
+		JsonArray topologyStats = (JsonArray)jsonObject.get("topologyStats");
+		
+		double latency = 0.0;
+		if(topologyStats.size() > 0){
+			JsonElement stats = topologyStats.get(1);
+			JsonObject statsObject = stats.getAsJsonObject();
+			String completeLatency = statsObject.get("completeLatency").getAsString();
+			latency = Double.parseDouble(completeLatency);
+		}
 		
 		List<Component> components = new ArrayList<Component>(spoutsArray.size() + boltsArray.size());
 		
@@ -37,8 +46,8 @@ public class TopologyComponents {
 			String id = spoutObject.get("spoutId").getAsString();
 			component.setId(id);
 			
-			String latency = spoutObject.get("completeLatency").getAsString();
-			component.setLatency(Double.parseDouble(latency));
+			//String latency = spoutObject.get("completeLatency").getAsString();
+			component.setLatency(latency);
 			
 			String tasks = spoutObject.get("tasks").getAsString();
 			component.setTasks(Integer.parseInt(tasks));
@@ -57,15 +66,14 @@ public class TopologyComponents {
 			String id = boltObject.get("boltId").getAsString();
 			component.setId(id);
 			
-			String latency = boltObject.get("processLatency").getAsString();
-			component.setLatency(Double.parseDouble(latency));
+			//String latency = boltObject.get("processLatency").getAsString();
+			component.setLatency(latency);
 			
 			String tasks = boltObject.get("tasks").getAsString();
 			component.setTasks(Integer.parseInt(tasks));
 			
 			components.add(component);
 		}
-		
 		
 		return components;
 	}
