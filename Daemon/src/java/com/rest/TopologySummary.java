@@ -34,12 +34,18 @@ public class TopologySummary {
 		
 		for(int i=0; i<resultsArray.size(); i++){			
 			JsonObject result = (JsonObject)resultsArray.get(i);
-			if(topologyName.equals(result.get("name"))){				
+			if(topologyName.equals(result.get("name").getAsString())){				
 				return result;				
 			}
 		}
 		
 		throw new TopologyNotFoundException("The topology is not present in the summary : " + topologyName);
+	}
+	
+	public static void main(String[] args) throws ClientProtocolException, IOException, TopologyNotFoundException, InterruptedException {
+		
+		getSummary("autoscaletest");
+		
 	}
 	
 }

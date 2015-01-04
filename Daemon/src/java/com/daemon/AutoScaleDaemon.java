@@ -40,7 +40,7 @@ public class AutoScaleDaemon {
 					String topologyId = topology.getId();
 					
 					System.out.println("Getting topology components");
-					List<Component> components = TopologyComponents.getInstance().getComponents(topologyId);
+					List<Component> components = TopologyComponents.getComponents(topologyId);
 					topology.setComponents(components);
 					
 					TopologyCache.getInstance().addTopology(topology.getName(), topology);					

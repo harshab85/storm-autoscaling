@@ -14,7 +14,7 @@ public final class Util {
 	
 	public static final String SERVER_HOST = "http://localhost:8080/";
 	
-	public static final String TOPOLOGY_SUMMARY_URL = "api/v1/topology/summary/";
+	public static final String TOPOLOGY_SUMMARY_URL = "api/v1/topology/summary";
 	
 	public static final String TOPOLOGY_INFORMATION_URL = "api/v1/topology/";
 	

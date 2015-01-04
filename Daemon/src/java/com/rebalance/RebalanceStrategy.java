@@ -67,6 +67,7 @@ public class RebalanceStrategy {
 		}*/
 		else{
 			System.out.println("Get positive latency");
+			System.out.println("Executors :" + nextComponent.getExecutors());
 			nextComponent = getPositiveLatency(nextComponent);
 			int executors = nextComponent.getExecutors() + 1;
 			nextComponent.setExecutors(executors);
@@ -83,15 +84,26 @@ public class RebalanceStrategy {
 		Component oldComponent = action.getComponent();
 		int executors = oldComponent.getExecutors();
 		System.out.println("Executors : " + executors);
-		double diffPercentage = getDiffPercentage(oldComponent);
 		
-		if(diffPercentage < 5){
-			diffPercentage = getDiffPercentage(oldComponent);
+		double oldLatency = oldComponent.getLatency();
+		Component newComponent = refreshComponentData(oldComponent); 
+		double newLatency = newComponent.getLatency();				
+		double diffPercentage = ((oldLatency-newLatency)/oldLatency) * 100.0;
+				
+		if(diffPercentage < 5){			
+			newComponent = refreshComponentData(oldComponent); 
+			newLatency = newComponent.getLatency();				
+			diffPercentage = ((oldLatency-newLatency)/oldLatency) * 100.0;								
 		}
+		
+		System.out.println("Old Latency : " + oldLatency);		
+		System.out.println("New Latency : " + newLatency);
+		System.out.println("Percentage diff : " + diffPercentage);
 		
 		if(diffPercentage >= 5){
 			executors++;
 			oldComponent.setExecutors(executors);
+			oldComponent.setLatency(newLatency);
 			Action lastAction = new Action(oldComponent, ActionEnum.Increase);
 			
 			this.topology.setLastAction(lastAction);			
@@ -101,36 +113,42 @@ public class RebalanceStrategy {
 		else{
 			executors--;			
 			Component nextComponent = this.topology.nextComponent();
-			nextComponent = getPositiveLatency(nextComponent);
-			int newExecutors = nextComponent.getExecutors() + 1;
-			nextComponent.setExecutors(newExecutors);
-			Action lastAction = new Action(nextComponent, ActionEnum.Increase);
-			
-			this.topology.setLastAction(lastAction);			
-			this.shouldRebalance = true;
-			this.components.put(oldComponent.getId(), executors);
-			this.components.put(nextComponent.getId(), newExecutors);
-		}				
-	}
-	
-	private double getDiffPercentage(Component oldComponent) throws ClientProtocolException, IOException, InterruptedException{		
-		double oldLatency = oldComponent.getLatency();
-		Component newComponent = refreshComponentData(oldComponent); 
-		double newLatency = newComponent.getLatency();				
-		double diffPercentage = ((oldLatency-newLatency)/oldLatency) * 100.0;
+			if(nextComponent != null){
+				nextComponent = getPositiveLatency(nextComponent);
+				int newExecutors = nextComponent.getExecutors() + 1;
+				nextComponent.setExecutors(newExecutors);
+				Action lastAction = new Action(nextComponent, ActionEnum.Increase);
 				
-		System.out.println("Old Latency : " + oldLatency);		
-		System.out.println("New Latency : " + newLatency);
-		System.out.println("Percentage diff : " + diffPercentage);
-		
-		return diffPercentage;
+				System.out.println("Cant rebalance current component");
+				System.out.println("Next component: " + nextComponent.getId());
+				System.out.println("Next component: old executors: " + (newComponent.getExecutors()-1));
+				System.out.println("Next component: new executors: " + newComponent.getExecutors());
+				
+				this.topology.setLastAction(lastAction);			
+				this.shouldRebalance = true;
+				this.components.put(oldComponent.getId(), executors);
+				this.components.put(nextComponent.getId(), newExecutors);
+			}
+			else{
+				System.out.println("No more components to rebalance. Stop");
+				Action lastAction = new Action(nextComponent, ActionEnum.Stop);
+				
+				this.topology.setLastAction(lastAction);
+				this.shouldRebalance = true;
+				this.components.put(oldComponent.getId(), executors);
+			}
+			
+			
+			
+			
+		}				
 	}
 	
 	private Component getPositiveLatency(Component component) throws InterruptedException, ClientProtocolException, IOException {
 		
 		double latency = component.getLatency();
 		while(latency <= 0){
-			System.out.println("Sleeping for " + Util.POSITIVE_LATENCY_SAMPLES_SLEEP_TIME_MSEC/1000.0 + " secs");
+			System.out.println("Positive Latency Wait: Sleeping for " + Util.POSITIVE_LATENCY_SAMPLES_SLEEP_TIME_MSEC/1000.0 + " secs");
 			Thread.sleep(Util.POSITIVE_LATENCY_SAMPLES_SLEEP_TIME_MSEC);			
 			component = refreshComponentData(component);
 			latency = component.getLatency();
@@ -140,7 +158,7 @@ public class RebalanceStrategy {
 	}
 	
 	private Component refreshComponentData(Component component) throws ClientProtocolException, IOException, InterruptedException{
-		List<Component> componentsList = TopologyComponents.getInstance().getComponents(this.topology.getId());
+		List<Component> componentsList = TopologyComponents.getComponents(this.topology.getId());
 		int index = componentsList.indexOf(component);
 		return componentsList.get(index);
 	}

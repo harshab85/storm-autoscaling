@@ -14,17 +14,8 @@ import com.topology.Component;
 import com.util.Util;
 
 public class TopologyComponents {
-
-	private static TopologyComponents INSTANCE = new TopologyComponents();
 	
-	private TopologyComponents(){		
-	}
-	
-	public static TopologyComponents getInstance(){
-		return INSTANCE;
-	}
-	
-	public List<Component> getComponents(String topologyId) throws ClientProtocolException, IOException, InterruptedException{		
+	public static List<Component> getComponents(String topologyId) throws ClientProtocolException, IOException, InterruptedException{		
 		
 		String results = RestAPI.getResults(Util.SERVER_HOST + Util.TOPOLOGY_INFORMATION_URL + topologyId);
 		JsonParser parser = new JsonParser();
@@ -77,5 +68,9 @@ public class TopologyComponents {
 		
 		
 		return components;
+	}
+	
+	public static void main(String[] args) throws ClientProtocolException, IOException, InterruptedException {
+		getComponents("autoscaletest-3-1420323429");
 	}
 }

@@ -30,5 +30,21 @@ public class Component {
 	}
 	public void setTasks(int tasks) {
 		this.tasks = tasks;
-	}		
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		
+		if(obj instanceof Component){
+			Component component = (Component)obj;
+			return (component.getId().equals(this.getId()));
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {		
+		return 37 * this.getId().hashCode();
+	}
 }
